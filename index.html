@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Log Viewer</title>
+    <style>
+        body {
+            font-family: monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+        }
+        #log {
+            white-space: pre;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="log"></div>
+
+    <script>
+        const logElement = document.getElementById('log');
+        const logs = [];
+
+        function getRandomIp() {
+            return `${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
+        }
+
+        function getRandomDate() {
+            const now = new Date();
+            return now.toISOString().replace('T', ' ').substring(0, 19);
+        }
+
+        function getRandomMethod() {
+            const methods = ["GET", "POST", "PUT", "DELETE"];
+            return methods[Math.floor(Math.random() * methods.length)];
+        }
+
+        function getRandomUrl() {
+            const urls = ["/index.html", "/login", "/dashboard", "/styles.css", "/script.js", "/images/logo.png", "/api/data", "/submit", "/home", "/contact", "/about", "/products", "/cart/add", "/checkout", "/search?q=test", "/api/user/123", "/blog", "/privacy", "/terms", "/feedback"];
+            return urls[Math.floor(Math.random() * urls.length)];
+        }
+
+        function getRandomStatus() {
+            const statuses = [200, 302, 404, 500];
+            return statuses[Math.floor(Math.random() * statuses.length)];
+        }
+
+        function getRandomSize() {
+            return Math.floor(Math.random() * 3000);
+        }
+
+        function getRandomInterval() {
+            const interval= Math.floor(Math.random() * 1000) - 300; // 500msから2500msの間のランダムな間隔
+		    console.log(interval)
+            return interval; // 500msから2500msの間のランダムな間隔
+        }
+
+        function generateLogEntry() {
+            return `${getRandomIp()} - - [${getRandomDate()} +0000] "${getRandomMethod()} ${getRandomUrl()} HTTP/1.1" ${getRandomStatus()} ${getRandomSize()}`;
+        }
+
+        function displayLogs() {
+            if (logs.length >= 40) {
+                logs.shift(); // 古いログエントリを削除
+            }
+            logs.push(generateLogEntry()); // 新しいログエントリを追加
+
+            logElement.textContent = logs.join('\n');
+
+            setTimeout(displayLogs, getRandomInterval());
+        }
+
+        displayLogs(); // 初回呼び出し
+    </script>
+</body>
+</html>
