@@ -30,7 +30,7 @@
 
         function getRandomDate() {
             const now = new Date();
-            return now.toISOString().replace('T', ' ').substring(0, 19);
+            return now.toLocaleString('en-GB', { hour12: false }).replace(',', '');
         }
 
         function getRandomMethod() {
@@ -53,13 +53,11 @@
         }
 
         function getRandomInterval() {
-            const interval= Math.floor(Math.random() * 1000) - 300; // 500msから2500msの間のランダムな間隔
-		    console.log(interval)
-            return interval; // 500msから2500msの間のランダムな間隔
+            return Math.floor(Math.random() * 2000) + 500; // 500msから2500msの間のランダムな間隔
         }
 
         function generateLogEntry() {
-            return `${getRandomIp()} - - [${getRandomDate()} +0000] "${getRandomMethod()} ${getRandomUrl()} HTTP/1.1" ${getRandomStatus()} ${getRandomSize()}`;
+            return `${getRandomIp()} - - [${getRandomDate()}] "${getRandomMethod()} ${getRandomUrl()} HTTP/1.1" ${getRandomStatus()} ${getRandomSize()}`;
         }
 
         function displayLogs() {
