@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-time Log Viewer</title>
+    <title>Fake Log Watch</title>
     <style>
         body {
             font-family: monospace;
@@ -23,9 +23,12 @@
     <script>
         const logElement = document.getElementById('log');
         const logs = [];
+        let interval = 500; // 初期のログ流れ速度（ms）
+        const MIN_INTERVAL = 10; // 最小速度（最速）
+        const MAX_INTERVAL = 999; // 最大速度（最遅）
 
         function getRandomIp() {
-            return `${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
+            return `${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${interval}`;
         }
 
         function getRandomDate() {
@@ -52,10 +55,6 @@
             return Math.floor(Math.random() * 3000);
         }
 
-        function getRandomInterval() {
-            return Math.floor(Math.random() * 2000) + 500; // 500msから2500msの間のランダムな間隔
-        }
-
         function generateLogEntry() {
             return `${getRandomIp()} - - [${getRandomDate()}] "${getRandomMethod()} ${getRandomUrl()} HTTP/1.1" ${getRandomStatus()} ${getRandomSize()}`;
         }
@@ -68,10 +67,44 @@
 
             logElement.textContent = logs.join('\n');
 
-            setTimeout(displayLogs, getRandomInterval());
+            setTimeout(displayLogs, interval);
         }
 
         displayLogs(); // 初回呼び出し
+
+        // キー押下イベントリスナーを追加
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowUp') {
+                // 上キーで速度を100ms上げる（間隔を短くする）
+                interval = Math.max(MIN_INTERVAL, interval - 10);
+            } else if (event.key === 'ArrowDown') {
+                // 下キーで速度を100ms下げる（間隔を長くする）
+                interval = Math.min(MAX_INTERVAL, interval + 10);
+            }
+        });
+
+        // スワイプイベントリスナーの追加
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (event) => {
+            touchStartX = event.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (event) => {
+            touchEndX = event.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX) {
+                // 左スワイプで速度を100ms上げる（間隔を短くする）
+                interval = Math.max(MIN_INTERVAL, interval - 10);
+            } else if (touchEndX > touchStartX) {
+                // 右スワイプで速度を100ms下げる（間隔を長くする）
+                interval = Math.min(MAX_INTERVAL, interval + 10);
+            }
+        }
     </script>
 </body>
 </html>
